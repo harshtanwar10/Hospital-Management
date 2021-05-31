@@ -1,0 +1,149 @@
+from prettytable import PrettyTable
+import mysql.connector as sqlpyn
+con=sqlpyn.connect(host="localhost",user="root",password="aari2323",database="harsh")
+cur=con.cursor()
+
+if con.is_connected()==True:
+    print("Sucessfully connected.")
+else:
+    print("Error! in connecting.")
+
+def display():        #Display of records.
+    cur.execute("select * from patient_records;")
+    data=cur.fetchall()
+    x = PrettyTable(["P_No", "P_Name", "P_ID", "Age","Department","Diagnostic"])
+    x._max_width={"p_no":10, "p_name":10, "p_id":15, "age":10,"department":50,"diagnistic":20}
+    for row in data:
+        x.add_row(row)
+    print(x)
+    con.commit()
+
+def insert():         #Insertion of records.
+    print("1.Single record.")
+    print("2.Multiple records.")
+    choice=int(input("Enter your choice:"))
+    z=1
+    while z==1:
+        if choice==1:
+            a1=int(input("P.No:"))
+            a2=str(input("Patient's name:"))
+            a3=int(input("P_ID:"))
+            a4=int(input("Age:"))
+            a5=str(input("Department:"))
+            a6=str(input("Diagnostic:"))
+            insrt="insert into patient_records(p_no,p_name,p_id,age,department,diagnistic) values({},'{}',{},{},'{}','{}')".format(a1,a2,a3,a4,a5,a6)
+            cur.execute(insrt)
+            con.commit()
+            z=2
+        elif choice==2:
+            a1=int(input("P.No:"))
+            a2=str(input("Patient's name:"))
+            a3=int(input("P_ID:"))
+            a4=int(input("Age:"))
+            a5=str(input("Department:"))
+            a6=str(input("Diagnostic:"))
+            insrt="insert into patient_records(p_no,p_name,p_id,age,department,diagnistic) values({},'{}',{},{},'{}','{}')".format(a1,a2,a3,a4,a5,a6)
+            cur.execute(insrt)
+            con.commit()
+            print("Type 'MORE' to add more records and type 'END' to finish.")
+            u=str(input("want to add more records?"))
+            if u=="MORE":
+                continue
+            elif u=="END":
+                z=2
+
+def modify():       #Modification of records.
+    print("Name")
+    print("ID")
+    print("Age")
+    print("Department")
+    print("Diagnostics")
+    m=input("Enter column you want to update(CHOOSE FROM ABOVE):")
+    if m=="Name":
+        name=input("Enter new name:")
+        number=int(input("Enter old patient no.:"))
+        m1="update patient_records set p_name='{}' where p_no={}".format(name,number)
+        cur.execute(m1)
+         
+    elif m=="ID":
+        pid=int(input("Enter new patient's id:"))
+        number=int(input("Enter old patient no.:"))
+        m2="update patient_records set p_id={} where p_no={}".format(pid,number)
+        cur.execute(m2)
+         
+    elif m=="Age":
+        age=input("Enter new age:")
+        number=int(input("Enter old patient no.:"))
+        m3="update patient_records set age={} where p_no={}".format(age,number)
+        cur.execute(m3)
+
+    elif m=="Department":
+        dept=input("Enter new dept:")
+        number=int(input("Enter old patient no.:"))
+        m4="update patient_records set department='{}' where p_no={}".format(dept,number)
+        cur.execute(m4)
+
+    elif m=="Diagnostics":
+        diag=input("Enter new diagnostic:")
+        number=int(input("Enter old patient no.:"))
+        m5="update patient_records set diagnistic='{}' where p_no={}".format(diag,number)
+        cur.execute(m5)
+    con.commit()
+
+def delete():     #Deletion of records.
+    d=int(input("Enter patient no whose records you want to delete:"))
+    dq="delete from patient_records where p_no={}".format(d)
+    cur.execute(dq)
+    print("Records deleted.")
+    con.commit()
+
+def search():       #Searching of records.
+    s=1
+    while s==1:
+        pno=int(input("Enter Patient no. whose records you want to search:"))
+        cur.execute("select * from patient_records where P_No={}".format(pno))
+        f = PrettyTable(["P_No", "P_Name", "P_ID", "Age","Department","Diagnostic"])
+        f._max_width={"p_no":10, "p_name":10, "p_id":15, "age":10,"department":50,"diagnistic":20}
+        data=cur.fetchall()
+        for row in data:
+            f.add_row(row)
+        print(f)
+        y=input("You want to search more records?(yes/no)")
+        if y=="yes":
+            continue
+        elif y=="no":
+            s=2
+    con.commit()
+    
+
+l=1
+while l==1:
+    print("\n")
+    print("MAIN MENU")
+    print("1.Show records of all patients.")
+    print("2.Insert new records.")
+    print("3.Modify existing records.")
+    print("4.Delete records.")
+    print("5.Search records.")
+    print("6.EXIT")
+    
+
+    choice1=int(input("Enter your choice from the above :) ="))
+    
+
+    if choice1==1:
+        display()
+    if choice1==2:
+        insert()
+    if choice1==3:
+        modify()
+    if choice1==4:
+        delete()
+    if choice1==5:
+        search()
+    if choice1==6:
+        print("Thanks for visit :)")
+        break
+
+    
+        
